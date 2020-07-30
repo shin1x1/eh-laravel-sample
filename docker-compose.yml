@@ -1,0 +1,31 @@
+version: '3'
+services:
+  nginx:
+    image: shin1x1/laravel-nginx118
+    ports:
+      - '8000:80'
+    volumes:
+      - .:/var/www/html
+    depends_on:
+      - php
+  php:
+    image: shin1x1/laravel-php74-pgsql
+    volumes:
+      - .:/var/www/html
+    depends_on:
+      - db
+      - db-test
+  db: &db
+    image: postgres:12-alpine
+    environment:
+      - POSTGRES_USER=app
+      - POSTGRES_PASSWORD=pass
+      - POSTGRES_DB=app
+      - LC_ALL=C
+  db-test:
+    *db
+  composer:
+    image: composer:1.10
+    volumes:
+      - .:/var/www/html
+    working_dir: /var/www/html
